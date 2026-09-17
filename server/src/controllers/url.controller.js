@@ -45,8 +45,8 @@ export const postUrlController = async (req, res) => {
     })
 
     //send the respose
-   return res.status(201).json({
-        sucess:true,
+    return res.status(201).json({
+        sucess: true,
         message: 'short-code created sucessfully',
         data: newurl
     })
@@ -59,68 +59,85 @@ export const getAllUrlController = async (req, res) => {
         const data = await urlModel.find()
 
         return res.status(200).json({
-            success:true,
+            success: true,
             message: "sucessfully fetched all the urls",
             data
         })
     } catch (error) {
         console.log('error in fetching all the data from the DB', error);
 
-            return res.status(500).json({
-            success:false,
+        return res.status(500).json({
+            success: false,
             message: "failed to fetch the data from DB"
         })
 
     }
 }
 
-export const deleteUrlController = async (req,res)=>{
-    
-    const {id} = req.params
+export const deleteUrlController = async (req, res) => {
 
-    if(!id){
+    const { id } = req.params
+
+    if (!id) {
         return res.status(400).json({
-            success:false,
-            message:"id not found in params"
+            success: false,
+            message: "id not found in params"
         })
     }
-    
+
     try {
 
         const isValidId = mongoose.Types.ObjectId.isValid(id);
 
-        if(!isValidId){
+        if (!isValidId) {
             return res.status(400).json({
-                success:false,
-                message:"invalid id"
+                success: false,
+                message: "invalid id"
             })
         }
 
-        const deleteUrl = await urlModel.findOneAndDelete({_id:id});
-        
-        if(!deleteUrl){
+        const deleteUrl = await urlModel.findOneAndDelete({ _id: id });
+
+        if (!deleteUrl) {
             return res.status(404).json({
-                success:false,
-                message:"url not found"
+                success: false,
+                message: "url not found"
             })
         }
 
         return res.status(200).json({
-            success:true,
-            message:"url deleted sucessfully"
+            success: true,
+            message: "url deleted sucessfully"
         })
     } catch (error) {
-        console.log('error in deleting the url',error);
+        console.log('error in deleting the url', error);
 
         return res.status(500).json({
-            success:false,
-            message:"internal server hand"
+            success: false,
+            message: "internal server hand"
         })
-        
+
     }
-    
-    
-    
+
+
+
     res.send('delete')
+}
+
+export const deleteAllController = async (req, res) => {
+    try {
+        await urlModel.deleteMany({})
+
+        res.status(200).json({
+            success: true,
+            message: "all the data in DB deleted successfully"
+        })
+    } catch (error) {
+        console.log('error in deleting all the url in DB', error);
+        res.status(500).json({
+            success: false,
+            message: "something went wrong, please try again"
+        })
+    }
 }
 

@@ -43,6 +43,11 @@ const App = () => {
     fetchData()
   }
 
+  const handleDeleteAll = async ()=>{
+    await axios.delete('http://localhost:5173/api/url/deleteAll')
+    fetchData()
+  }
+
 
   useEffect(() => {
     //initial fetching the data
@@ -118,9 +123,21 @@ const App = () => {
 
         {/* 4. Links List Section */}
         <section className="pt-2 space-y-3">
-          <h2 className="text-lg font-bold font-serif text-stone-900">
-            Your links ({urls.length})
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold font-serif text-stone-900">
+              Your links ({urls.length})
+            </h2>
+
+            {urls.length > 0 && (
+              <button
+                type="button"
+                onClick={()=>{handleDeleteAll()}}
+                className="text-xs font-medium text-stone-500 hover:text-red-600 transition cursor-pointer"
+              >
+                Delete all
+              </button>
+            )}
+          </div>
 
           <div className="divide-y divide-stone-200/70 border-t border-stone-200/70">
             {isLoading ? (
