@@ -6,7 +6,7 @@ export const redirectController = async (req,res)=>{
     const isShortCodeExists = await urlModel.findOne({shortCode:shortCode})
 
     if(isShortCodeExists === null){
-        res.status(404).json({
+      return  res.status(404).json({
             message:"url not found"
         })
     }

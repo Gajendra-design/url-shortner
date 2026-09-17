@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { urlModel } from '../models/url.model.js';
 import { uniqueCode } from '../utils/genrateCode.js'
 
@@ -44,8 +45,9 @@ export const postUrlController = async (req, res) => {
     })
 
     //send the respose
-    res.status(201).json({
-        message: 'created',
+   return res.status(201).json({
+        sucess:true,
+        message: 'short-code created sucessfully',
         data: newurl
     })
 
@@ -57,16 +59,68 @@ export const getAllUrlController = async (req, res) => {
         const data = await urlModel.find()
 
         return res.status(200).json({
+            success:true,
             message: "sucessfully fetched all the urls",
             data
         })
     } catch (error) {
         console.log('error in fetching all the data from the DB', error);
 
-        res.status(500).json({
+            return res.status(500).json({
+            success:false,
             message: "failed to fetch the data from DB"
         })
 
     }
+}
+
+export const deleteUrlController = async (req,res)=>{
+    
+    const {id} = req.params
+
+    if(!id){
+        return res.status(400).json({
+            success:false,
+            message:"id not found in params"
+        })
+    }
+    
+    try {
+
+        const isValidId = mongoose.Types.ObjectId.isValid(id);
+
+        if(!isValidId){
+            return res.status(400).json({
+                success:false,
+                message:"invalid id"
+            })
+        }
+
+        const deleteUrl = await urlModel.findOneAndDelete({_id:id});
+        
+        if(!deleteUrl){
+            return res.status(404).json({
+                success:false,
+                message:"url not found"
+            })
+        }
+
+        return res.status(200).json({
+            success:true,
+            message:"url deleted sucessfully"
+        })
+    } catch (error) {
+        console.log('error in deleting the url',error);
+
+        return res.status(500).json({
+            success:false,
+            message:"internal server hand"
+        })
+        
+    }
+    
+    
+    
+    res.send('delete')
 }
 
